@@ -1,81 +1,108 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
-icon: 'rocket'
+title: "Quickstart: run Stratosphere Core in minutes"
+description: "Learn how to install and run Stratosphere Core in minutes. Requires Go 1.21+. Covers cloning, running, and using the interactive CLI menu."
 ---
 
-## Get started in three steps
+Stratosphere Core is a Go CLI program. You do not need to compile a binary to get started — `go run main.go` is all you need. This guide walks you through cloning the repository, installing dependencies, and using the interactive menu for the first time.
 
-Get your documentation site running locally and make your first customization.
+## Prerequisites
 
-### Step 1: Set up your local environment
+- **Go 1.21 or newer** — Download from [go.dev/dl](https://go.dev/dl/). Verify your version with `go version`.
+- **Git** — Required to clone the repository.
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
+## Steps
 
-### Step 2: Deploy your changes
+<Steps>
+  <Step title="Clone the repository">
+    Clone the Stratosphere Core repository and move into the project directory.
 
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+    ```bash
+    git clone https://github.com/stratosphere-ve/core.git && cd core
+    ```
+  </Step>
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+  <Step title="Install dependencies">
+    Download the Go module dependencies declared in `go.mod`. This fetches `gopsutil/v3` and its transitive dependencies.
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+    ```bash
+    go mod download
+    ```
+  </Step>
 
-### Step 3: Go live
+  <Step title="Run the CLI">
+    Start the CLI directly from source using `go run`.
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+    ```bash
+    go run main.go
+    ```
+
+    The program prints a welcome message and the full menu, then waits for your input:
+
+    ```text
+    Welcome to the Stratosphere CLI!
+    This is just a simple mockup/placeholder of how everything will work in the future (in a GUI of course, not a CLI)
+
+    What would you like to do next?
+    -WATCHERS-
+    1. Change CpuWatcher Polling rate
+    2. View CPU usage
+
+    3. Change RAMWatcher Polling rate
+    4. View RAM usage
+
+    -VM MANAGEMENT- (Includes VM watchers and actions)
+
+    5. View VM Resource Allocation
+    6. View VM Status
+    7. View " View VM Resource Allocation" + "View VM Status"
+    8. Create VM
+    9. Delete VM
+    10. Manage VM
+
+
+    -OTHER-
+    50. Exit
+    ```
+  </Step>
+
+  <Step title="Try your first watcher">
+    Type `2` and press Enter to view live CPU usage. The `cpuwatcher` package uses `gopsutil` to read system CPU utilization and prints the result to the terminal.
+
+    ```text
+    2
+    ```
+
+    You should see output showing current CPU usage across your cores.
+  </Step>
+</Steps>
+
+<Tip>
+Enter `50` at the menu prompt to exit the program cleanly.
+</Tip>
+
+## What each menu option does
+
+| Option | Action |
+|---|---|
+| 1 | Set a custom polling rate for the CPU watcher (2-second example) |
+| 2 | View current CPU usage |
+| 3 | Set a custom polling rate for the RAM watcher |
+| 4 | View current RAM usage |
+| 5 | View VM resource allocation |
+| 6 | View VM running status |
+| 7 | View both VM resource allocation and status |
+| 8 | Create a new VM |
+| 9 | Delete an existing VM |
+| 10 | Manage a VM (start, stop, restart, rename) |
+| 50 | Exit |
 
 ## Next steps
 
-Now that you have your docs running, explore these key features:
-
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card title="Build from source" icon="hammer" href="/building-from-source">
+    Compile a standalone binary instead of using `go run`.
+  </Card>
+  <Card title="Introduction" icon="book-open" href="/introduction">
+    Learn about the architecture and project status.
+  </Card>
 </CardGroup>
-
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>

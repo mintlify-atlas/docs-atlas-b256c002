@@ -1,133 +1,63 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
-icon: 'star'
+title: "Stratosphere Core: Go-based VM management CLI"
+description: "Stratosphere Core is an open-source CLI tool written in Go for managing virtual environments, monitoring system resources, and orchestrating VMs."
 ---
 
-## Setting up
+Stratosphere Core is the foundation of the Stratosphere virtualization platform — a Proxmox-inspired virtual environment manager built in Go. It provides real-time CPU and RAM monitoring, full VM lifecycle management, and a modular architecture designed to grow into a full GUI-driven hypervisor platform.
 
-Get your documentation site up and running in minutes.
-
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Install and run Stratosphere Core in under five minutes
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Build from Source" icon="hammer" href="/building-from-source">
+    Compile the CLI yourself from the Go source code
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Watchers" icon="chart-line" href="/watchers/overview">
+    Monitor CPU and RAM usage in real time with configurable polling
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="VM Management" icon="server" href="/vms/overview">
+    Create, delete, rename, and manage virtual machines
   </Card>
-</Columns>
+  <Card title="CLI Commands" icon="terminal" href="/reference/cli-commands">
+    Full reference for every command and option in the CLI
+  </Card>
+  <Card title="VM Config Schema" icon="file-code" href="/reference/vm-config-schema">
+    JSON schema reference for VM configuration files
+  </Card>
+</CardGroup>
 
-## Create beautiful pages
+## What Stratosphere does
 
-Everything you need to create world-class documentation.
+Stratosphere Core is an early-stage, actively developed virtualization management layer. Right now it provides:
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+- **System watchers** — Continuous polling of CPU and RAM usage via [gopsutil](https://github.com/shirou/gopsutil), with user-configurable polling rates
+- **VM lifecycle management** — Create, delete, rename, and manage virtual machines stored as JSON config files
+- **Interactive CLI** — A menu-driven terminal interface covering all watcher and VM operations
 
-## Make your content agent ready
+<Note>
+Stratosphere is under active development. Hypervisor integration (QEMU and others) is planned for future releases. See the [Roadmap](/reference/roadmap) for what's coming.
+</Note>
 
-Make your docs work for humans and AI agents alike.
+## Get involved
 
-<Columns cols={2}>
-  <Card
-    title="Prompt component"
-    icon="robot"
-    href="/agent-ready/prompt"
-  >
-    Embed shareable AI prompts readers can copy or open in Cursor.
-  </Card>
-  <Card
-    title="Visibility"
-    icon="eye"
-    href="/agent-ready/visibility"
-  >
-    Show different content to humans and agents reading your docs.
-  </Card>
-  <Card
-    title="Contextual menu"
-    icon="bolt"
-    href="/agent-ready/contextual"
-  >
-    Give readers one-click access to Claude, ChatGPT, Cursor, and more.
-  </Card>
-  <Card
-    title="AI coding tools"
-    icon="wand-magic-sparkles"
-    href="/ai-tools/claude-code"
-  >
-    Set up Claude Code, Cursor, or Windsurf with Mintlify's skill.
-  </Card>
-</Columns>
+Stratosphere is looking for contributors — Go developers, web developers, and testers alike. Join the community on [Discord](https://discord.gg/uXnXwNvttF) to get started.
 
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<Steps>
+  <Step title="Install Go">
+    Download and install Go 1.21 or newer from [go.dev](https://go.dev/dl/)
+  </Step>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/stratosphere-ve/core.git
+    cd core
+    ```
+  </Step>
+  <Step title="Run the CLI">
+    ```bash
+    go run main.go
+    ```
+  </Step>
+  <Step title="Explore the menu">
+    Use the numbered menu to access watchers, VM management, and more
+  </Step>
+</Steps>

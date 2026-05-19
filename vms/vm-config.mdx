@@ -1,0 +1,157 @@
+---
+title: "VM JSON config file format and field reference"
+description: "Each VM in Stratosphere is defined by a JSON configuration file in the vms/ directory. Learn the schema for cpu, memory, network, and storage fields."
+---
+
+Each virtual machine in Stratosphere Core is backed by a JSON file at `vms/<vmname>.json`. This file holds the VM's identity metadata and declares its hardware and network configuration. The file is created automatically when you run the Create VM action (CLI option 8), though the current implementation creates an empty file — field population is planned for a future release.
+
+## Example configuration
+
+```json
+{
+  "vm": {
+    "name": "example",
+    "uuid": "example-id",
+    "created_at": "1970-01-01T12:00:00Z"
+  },
+  "cpu": {
+    "cores": 2,
+    "threads": 2,
+    "type": "host"
+  },
+  "memory": {
+    "size_mb": 2048
+  },
+  "network": {
+    "interfaces": [
+      {
+        "name": "eth0",
+        "type": "nat",
+        "mac": "auto"
+      }
+    ]
+  },
+  "storage": {
+    "disks": [
+      {
+        "name": "example-disk",
+        "path": "vms/example/example-disk-0.qcow2",
+        "size_gb": 20,
+        "format": "qcow2"
+      }
+    ]
+  }
+}
+```
+
+## File naming
+
+Config files follow the pattern `vms/<vmname>.json`. The VM name comes directly from what you enter at the CLI prompt when creating a VM. For example, a VM named `web-server` is stored at `vms/web-server.json`.
+
+## Schema reference
+
+<AccordionGroup>
+  <Accordion title="vm — identity metadata">
+    The `vm` object holds the VM's core identity fields.
+
+    | Field        | Type   | Description                                      |
+    | ------------ | ------ | ------------------------------------------------ |
+    | `name`       | string | Human-readable VM name. Matches the file name.   |
+    | `uuid`       | string | Unique identifier for this VM instance.          |
+    | `created_at` | string | ISO 8601 timestamp of when the VM was created.   |
+
+    ```json
+    "vm": {
+      "name": "example",
+      "uuid": "example-id",
+      "created_at": "1970-01-01T12:00:00Z"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="cpu — processor configuration">
+    The `cpu` object defines the virtual CPU allocation.
+
+    | Field     | Type   | Description                                                    |
+    | --------- | ------ | -------------------------------------------------------------- |
+    | `cores`   | int    | Number of virtual CPU cores allocated to the VM.               |
+    | `threads` | int    | Number of threads per core.                                    |
+    | `type`    | string | CPU emulation type. Use `"host"` to pass through host CPU features. |
+
+    ```json
+    "cpu": {
+      "cores": 2,
+      "threads": 2,
+      "type": "host"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="memory — RAM allocation">
+    The `memory` object specifies how much RAM is allocated to the VM.
+
+    | Field     | Type | Description                          |
+    | --------- | ---- | ------------------------------------ |
+    | `size_mb` | int  | Amount of RAM in megabytes (MB).     |
+
+    ```json
+    "memory": {
+      "size_mb": 2048
+    }
+    ```
+
+    <Tip>
+    2048 MB equals 2 GB. Set this to a multiple of 1024 for clean GB boundaries.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="network — network interfaces">
+    The `network` object contains a list of virtual network interfaces under the `interfaces` key.
+
+    | Field  | Type   | Description                                                          |
+    | ------ | ------ | -------------------------------------------------------------------- |
+    | `name` | string | Interface name as seen inside the VM (e.g. `eth0`).                  |
+    | `type` | string | Network mode. `"nat"` routes traffic through the host.               |
+    | `mac`  | string | MAC address. Set to `"auto"` to have one generated automatically.    |
+
+    ```json
+    "network": {
+      "interfaces": [
+        {
+          "name": "eth0",
+          "type": "nat",
+          "mac": "auto"
+        }
+      ]
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="storage — disk configuration">
+    The `storage` object contains a list of virtual disks under the `disks` key.
+
+    | Field     | Type   | Description                                                         |
+    | --------- | ------ | ------------------------------------------------------------------- |
+    | `name`    | string | Disk label used to identify this disk.                              |
+    | `path`    | string | File path to the disk image, relative to the project root.          |
+    | `size_gb` | int    | Disk capacity in gigabytes.                                         |
+    | `format`  | string | Disk image format. `"qcow2"` is the standard QEMU copy-on-write format. |
+
+    ```json
+    "storage": {
+      "disks": [
+        {
+          "name": "example-disk",
+          "path": "vms/example/example-disk-0.qcow2",
+          "size_gb": 20,
+          "format": "qcow2"
+        }
+      ]
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+`VMCreate()` currently creates an empty `vms/<name>.json` file without writing any fields into it. The schema above documents the intended format that will be populated by a future release.
+</Note>

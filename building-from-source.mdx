@@ -1,0 +1,100 @@
+---
+title: "Compile Stratosphere Core from Go source code"
+description: "Compile the Stratosphere Core CLI binary from Go source code. Covers build commands, cross-compilation for Linux and Windows, and running the binary."
+---
+
+Building Stratosphere Core produces a single self-contained binary you can run without needing Go installed on the target machine. The standard `go build` command handles everything — dependency fetching, compilation, and linking.
+
+## Prerequisites
+
+- **Go 1.21 or newer** — Download from [go.dev/dl](https://go.dev/dl/). Verify with `go version`.
+- **Git** — Required to clone the repository.
+
+## Steps
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/stratosphere-ve/core.git && cd core
+    ```
+  </Step>
+
+  <Step title="Build the binary">
+    Run `go build` from the project root. The output binary name differs by platform.
+
+    <CodeGroup>
+
+    ```bash Linux and macOS
+    go build -o stratosphere main.go
+    ```
+
+    ```bash Windows
+    go build -o stratosphere.exe main.go
+    ```
+
+    </CodeGroup>
+
+    Go automatically downloads any missing dependencies before compiling.
+  </Step>
+
+  <Step title="Run the binary">
+    Execute the compiled binary directly.
+
+    <CodeGroup>
+
+    ```bash Linux and macOS
+    ./stratosphere
+    ```
+
+    ```bash Windows
+    .\stratosphere.exe
+    ```
+
+    </CodeGroup>
+
+    You will see the same interactive menu as `go run main.go`.
+  </Step>
+</Steps>
+
+## Cross-compilation
+
+Go supports compiling for a different OS or architecture than your current machine by setting the `GOOS` and `GOARCH` environment variables before running `go build`.
+
+```bash
+# Build a Linux amd64 binary from any host
+GOOS=linux GOARCH=amd64 go build -o stratosphere main.go
+
+# Build a Windows amd64 binary from any host
+GOOS=windows GOARCH=amd64 go build -o stratosphere.exe main.go
+
+# Build a Linux arm64 binary (e.g. for a Raspberry Pi)
+GOOS=linux GOARCH=arm64 go build -o stratosphere-arm64 main.go
+```
+
+## Windows Defender Smart App Control
+
+<Warning>
+Windows Defender Smart App Control may block the compiled `.exe` from running, even if you built it yourself. If this happens, use `go run main.go` instead of the compiled binary — it bypasses the block by running the program directly through the Go toolchain rather than as a standalone executable.
+</Warning>
+
+## `go run` vs compiled binary
+
+| | `go run main.go` | Compiled binary |
+|---|---|---|
+| Requires Go installed | Yes | No (on target machine) |
+| Startup time | Slightly slower (compiles on each run) | Faster |
+| Portability | Source must be present | Single file, copy anywhere |
+| Development use | Recommended | Recommended for distribution |
+
+For day-to-day development and testing, `go run main.go` is the simpler choice. Build a binary when you want to distribute or deploy the program without bundling the Go toolchain.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Run Stratosphere Core directly with `go run` — no build step needed.
+  </Card>
+  <Card title="Introduction" icon="book-open" href="/introduction">
+    Learn about the architecture, packages, and project roadmap.
+  </Card>
+</CardGroup>

@@ -1,0 +1,50 @@
+---
+title: "Stratosphere Core roadmap: what's built and what's next"
+description: "Track what's implemented, what's in progress, and what's planned for Stratosphere Core. Hypervisor support, GUI, and more coming in future releases."
+---
+
+Stratosphere Core is in active early development. The project is currently solo-developed, which means progress is incremental — features are added steadily but the full hypervisor integration and GUI are still some months away. This page tracks what works today, what exists as a stub, and what is on the horizon.
+
+<AccordionGroup>
+  <Accordion title="Currently implemented" defaultOpen={true}>
+    The following features are working and available through the CLI menu:
+
+    - **CPU watcher** — `WatchCPU()` monitors live CPU usage. `CPUSetPollingRate()` adjusts the polling interval (CLI options 1 and 2).
+    - **RAM watcher** — `WatchRAM()` monitors live RAM usage. `RAMSetPollingRate()` adjusts the polling interval (CLI options 3 and 4).
+    - **VM creation** — `VMCreate()` creates the `vms/` directory and writes a JSON config file for a new VM (CLI option 8).
+    - **VM deletion** — `VMDelete()` removes a VM (CLI option 9).
+    - **VM rename** — `VMRename()` renames an existing VM, accessible via the VMManage submenu (CLI option 10 → 4).
+    - **Interactive CLI menu** — numbered menu covering all implemented actions.
+  </Accordion>
+
+  <Accordion title="Placeholder / not yet implemented">
+    The following stubs exist in the codebase but have no implementation:
+
+    - **VM Start** — case 1 in the VMManage submenu is an empty stub.
+    - **VM Stop** — case 2 in the VMManage submenu is an empty stub.
+    - **VM Restart** — case 3 in the VMManage submenu is an empty stub.
+    - **Real VM watcher data** — `VMResourceAllocation()` and `VMRunningStatus()` do not yet read from a live hypervisor; values are currently hardcoded.
+    - **VM ID targeting** — there is no mechanism yet for addressing a specific VM by ID when multiple VMs exist.
+  </Accordion>
+
+  <Accordion title="Planned">
+    The following items are on the roadmap but not yet started:
+
+    - **QEMU / hypervisor integration** — full VM lifecycle control via QEMU. Estimated 5–6 months from project start.
+    - **GUI interface** — the current CLI is an explicit placeholder for a future graphical interface.
+    - **Modular system architecture** — the internals will be restructured to support clean separation between watchers, actions, and the interface layer.
+    - **Web interface** — a browser-based management panel is planned. Contributors with Node.js experience are welcome (see the Discord link below).
+    - **Configurable polling via user input** — options 1 and 3 currently hardcode the polling rate to 2 seconds; interactive input will be added.
+    - **Full `VMCreate()` prompts** — creation will prompt for all config fields instead of writing an empty JSON file.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Contributing
+
+Stratosphere is open to contributors, particularly for the planned web interface.
+
+<Note>
+  Join the Discord to discuss the project, ask questions, or coordinate on contributions: [discord.gg/uXnXwNvttF](https://discord.gg/uXnXwNvttF)
+</Note>

@@ -1,0 +1,87 @@
+---
+title: "CPU Watcher: monitor CPU usage in real time"
+description: "The Stratosphere CPU Watcher polls CPU usage continuously using gopsutil. Learn how to start it from the CLI and configure the polling interval."
+---
+
+The CPU Watcher is a continuous polling loop that reads overall CPU usage percent from the operating system and prints it to the terminal on every cycle. It is implemented in the `cpuwatcher` package and uses the [gopsutil](https://github.com/shirou/gopsutil) library to gather CPU statistics without platform-specific system calls.
+
+## What it does
+
+On each iteration, `WatchCPU()` calls `cpu.Percent()` with the configured polling duration and `false` for per-CPU reporting, which returns a single aggregate usage value across all cores. The result is printed alongside the current polling rate, then the loop immediately begins the next sample.
+
+**Output format:**
+
+```
+Watching CPU usage - Current usage: XX.XX% - polling rate: N seconds
+```
+
+## Source code
+
+```go cpuwatcher/cpuwatcher.go
+package cpuwatcher
+
+import (
+    "fmt"
+    "time"
+    "github.com/shirou/gopsutil/v3/cpu"
+)
+
+var cpuPollingRate time.Duration = 1 * time.Second
+
+func WatchCPU() {
+    for {
+        cpuPercent, err := cpu.Percent(cpuPollingRate, false)
+        if err != nil {
+            fmt.Println("Error fetching CPU info:", err)
+            return
+        }
+        fmt.Printf("Watching CPU usage - Current usage: %.2f%% - polling rate: %v seconds\n", cpuPercent[0], cpuPollingRate)
+    }
+}
+
+func CPUSetPollingRate(rate float64) {
+    cpuPollingRate = time.Duration(rate * float64(time.Second))
+    fmt.Printf("Setting CPU watcher polling rate to %v seconds\n", rate)
+}
+```
+
+## CLI usage
+
+<Steps>
+  <Step title="Run the CLI">
+    ```bash
+    go run main.go
+    ```
+  </Step>
+  <Step title="Set the polling rate (optional)">
+    Select option **1** from the menu. This sets the CPU polling rate to 2 seconds and immediately starts the watcher.
+  </Step>
+  <Step title="Start watching CPU usage">
+    Select option **2** from the menu to start `WatchCPU()` with the current polling rate (default: 1 second).
+  </Step>
+</Steps>
+
+## Example output
+
+```
+Watching CPU usage - Current usage: 14.32% - polling rate: 1s seconds
+Watching CPU usage - Current usage: 21.87% - polling rate: 1s seconds
+Watching CPU usage - Current usage: 9.56% - polling rate: 1s seconds
+```
+
+## Polling rate
+
+The default polling rate is **1 second**. Selecting CLI option `1` calls `CPUSetPollingRate(2)`, which sets the rate to 2 seconds before starting the loop.
+
+You can inspect the `cpuPollingRate` variable or call `CPUSetPollingRate()` directly in code to set any rate you need.
+
+<Warning>
+`WatchCPU()` runs an infinite loop and does not return until an error occurs or the process is interrupted. Press **Ctrl+C** to stop the watcher and return to the CLI menu.
+</Warning>
+
+## Functions
+
+| Function | Description |
+|----------|-------------|
+| `WatchCPU()` | Starts the infinite CPU polling loop. Prints usage percent and polling rate on each cycle. |
+| `CPUSetPollingRate(rate float64)` | Sets the polling interval in seconds. Accepts a `float64` value (e.g. `2.0` for 2 seconds). |

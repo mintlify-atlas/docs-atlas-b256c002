@@ -1,0 +1,98 @@
+---
+title: "RAM Watcher: monitor memory usage in real time"
+description: "The Stratosphere RAM Watcher reports total, used, and percent memory usage continuously using gopsutil. Set polling rate or start watching directly."
+---
+
+The RAM Watcher is a continuous polling loop that reads virtual memory statistics from the operating system and prints total RAM, used RAM, and used RAM percentage to the terminal on each cycle. It is implemented in the `ramwatcher` package and uses the [gopsutil](https://github.com/shirou/gopsutil) library to access memory information in a cross-platform way.
+
+## What it does
+
+On each iteration, `WatchRAM()` calls `mem.VirtualMemory()` to retrieve a snapshot of system memory. It converts the raw byte values for total and used RAM into gigabytes by dividing by 1024³, then prints all three values before sleeping for the configured polling duration.
+
+**Output format:**
+
+```
+Watching RAM usage - Total RAM: X.XX GB, Used RAM: X.XX GB, Used RAM Percent: XX.XX%
+```
+
+<Note>
+RAM byte values are converted to GB by dividing by 1,073,741,824 (1024³). The `UsedPercent` field is taken directly from gopsutil and reflects the OS-reported usage ratio.
+</Note>
+
+## Source code
+
+```go ramwatcher/ramwatcher.go
+package ramwatcher
+
+import (
+    "fmt"
+    "time"
+    "github.com/shirou/gopsutil/v3/mem"
+)
+
+var ramPollingRate time.Duration = 1 * time.Second
+
+func WatchRAM() {
+    for {
+        vmStat, err := mem.VirtualMemory()
+        if err != nil {
+            fmt.Println("Error fetching RAM info:", err)
+            return
+        }
+        var totalRAMGB float64 = float64(vmStat.Total) / (1024 * 1024 * 1024)
+        var usedRAMGB float64 = float64(vmStat.Used) / (1024 * 1024 * 1024)
+        var usedRAMPercent float64 = vmStat.UsedPercent
+
+        fmt.Printf("Watching RAM usage - Total RAM: %.2f GB, Used RAM: %.2f GB, Used RAM Percent: %.2f%%\n",
+            totalRAMGB, usedRAMGB, usedRAMPercent)
+
+        time.Sleep(ramPollingRate)
+    }
+}
+
+func RAMSetPollingRate(rate float64) {
+    ramPollingRate = time.Duration(rate * float64(time.Second))
+    fmt.Printf("Setting RAM watcher polling rate to %v seconds\n", rate)
+}
+```
+
+## CLI usage
+
+<Steps>
+  <Step title="Run the CLI">
+    ```bash
+    go run main.go
+    ```
+  </Step>
+  <Step title="Set the polling rate (optional)">
+    Select option **3** from the menu. This sets the RAM polling rate to 2 seconds and immediately starts the watcher.
+  </Step>
+  <Step title="Start watching RAM usage">
+    Select option **4** from the menu to start `WatchRAM()` with the current polling rate (default: 1 second).
+  </Step>
+</Steps>
+
+## Example output
+
+```
+Watching RAM usage - Total RAM: 15.54 GB, Used RAM: 8.21 GB, Used RAM Percent: 52.83%
+Watching RAM usage - Total RAM: 15.54 GB, Used RAM: 8.34 GB, Used RAM Percent: 53.67%
+Watching RAM usage - Total RAM: 15.54 GB, Used RAM: 8.19 GB, Used RAM Percent: 52.71%
+```
+
+## Polling rate
+
+The default polling rate is **1 second**, controlled by the `ramPollingRate` variable. Unlike the CPU watcher — which passes the duration directly to `cpu.Percent()` — the RAM watcher uses `time.Sleep(ramPollingRate)` at the end of each loop iteration to introduce the delay.
+
+Selecting CLI option `3` calls `RAMSetPollingRate(2)`, which sets the rate to 2 seconds before starting the loop.
+
+<Warning>
+`WatchRAM()` runs an infinite loop and does not return until an error occurs or the process is interrupted. Press **Ctrl+C** to stop the watcher and return to the CLI menu.
+</Warning>
+
+## Functions
+
+| Function | Description |
+|----------|-------------|
+| `WatchRAM()` | Starts the infinite RAM polling loop. Prints total GB, used GB, and used percent on each cycle. |
+| `RAMSetPollingRate(rate float64)` | Sets the polling interval in seconds. Accepts a `float64` value (e.g. `2.0` for 2 seconds). |

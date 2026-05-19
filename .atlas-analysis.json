@@ -1,0 +1,54 @@
+{
+  "projectType": "cli-tool",
+  "projectName": "Stratosphere Core",
+  "projectDescription": "A Go-based CLI tool for managing virtual environments, providing system resource monitoring and VM lifecycle management as the foundation for the Stratosphere virtualization platform.",
+  "theme": "aspen",
+  "primaryColor": "#5c64f4",
+  "lightColor": "#acb4fc",
+  "darkColor": "#ffffff",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "quickstart", "building-from-source"]
+          },
+          {
+            "group": "Watchers",
+            "pages": ["watchers/overview", "watchers/cpu-watcher", "watchers/ram-watcher"]
+          },
+          {
+            "group": "VM Management",
+            "pages": ["vms/overview", "vms/vm-config", "vms/vm-actions", "vms/vm-watcher"]
+          },
+          {
+            "group": "Reference",
+            "pages": ["reference/cli-commands", "reference/vm-config-schema", "reference/roadmap"]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Real-time CPU usage monitoring with configurable polling rates",
+    "Real-time RAM usage monitoring with configurable polling rates",
+    "VM lifecycle management (create, delete, rename)",
+    "JSON-based VM configuration storage",
+    "Interactive CLI interface for all operations",
+    "Cross-platform system stats via gopsutil"
+  ],
+  "publicApiSurface": [
+    "cpuwatcher.WatchCPU()",
+    "cpuwatcher.CPUSetPollingRate(rate float64)",
+    "ramwatcher.WatchRAM()",
+    "ramwatcher.RAMSetPollingRate(rate float64)",
+    "vmwatcher.VMRunningStatus()",
+    "vmwatcher.VMResourceAllocation()",
+    "vmactions.VMCreate()",
+    "vmactions.VMDelete()",
+    "vmactions.VMManage()",
+    "vmactions.VMRename()"
+  ]
+}

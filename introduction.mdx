@@ -1,0 +1,51 @@
+---
+title: "Stratosphere Core: open-source Go VM manager"
+description: "Stratosphere Core is a Go-based CLI for virtual environment management. Monitor system resources and manage VMs from a single interactive menu."
+---
+
+Stratosphere Core is an open-source, Proxmox-inspired virtual environment manager written in Go. It is an early-stage project that provides a menu-driven CLI for monitoring CPU and RAM usage, managing virtual machine lifecycles, and laying the groundwork for a future GUI-driven hypervisor platform. All VM state is stored as JSON config files, and real-time resource data is collected via the [gopsutil](https://github.com/shirou/gopsutil) library.
+
+## Key features
+
+- **CPU watcher** — Poll CPU usage at a configurable rate using `gopsutil`. View live utilization or adjust the polling interval from the CLI menu.
+- **RAM watcher** — Poll RAM usage at a configurable rate. View live memory consumption or change the polling interval on the fly.
+- **VM lifecycle management** — Create, delete, and rename VMs. VM state is persisted as JSON config files in a local `vms/` directory. Start, stop, and restart are planned for a future hypervisor-integrated release.
+- **VM resource and status views** — Inspect allocated resources and running status for any VM, individually or combined.
+- **Interactive CLI menu** — All functionality is accessible from a single numbered menu. No flags or subcommands to memorize.
+- **gopsutil integration** — System metrics are sourced from `github.com/shirou/gopsutil/v3`, a cross-platform library that works on Linux, macOS, and Windows.
+
+## Architecture
+
+Stratosphere Core is organized into four packages, each with a focused responsibility:
+
+| Package | Responsibility |
+|---|---|
+| `cpuwatcher` | Polls CPU usage at a configurable interval and exposes the current utilization |
+| `ramwatcher` | Polls RAM usage at a configurable interval and exposes current memory stats |
+| `vmwatcher` | Reports VM resource allocation and running status (currently hardcoded placeholder values) |
+| `vmactions` | Handles VM lifecycle operations: create, delete, start, stop, restart, rename |
+
+The `main.go` entry point presents the interactive menu, reads user input, and dispatches to the appropriate package function.
+
+## Project status
+
+<Note>
+Stratosphere is under active development. It is currently a CLI placeholder that demonstrates the core architecture. Hypervisor integration (QEMU and others) is not yet included and is estimated at least several months away if development continues at its current pace. All current VM management operates on local JSON config files only.
+</Note>
+
+## Community
+
+Stratosphere is looking for contributors — Go developers, web developers (Node.js), and testers are all welcome. Join the Discord server to get involved or ask questions.
+
+[Join the Stratosphere Discord](https://discord.gg/uXnXwNvttF)
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Install Go, clone the repo, and run the CLI in minutes.
+  </Card>
+  <Card title="Build from source" icon="hammer" href="/building-from-source">
+    Compile a standalone binary for Linux, macOS, or Windows.
+  </Card>
+</CardGroup>

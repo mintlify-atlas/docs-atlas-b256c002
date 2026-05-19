@@ -1,0 +1,141 @@
+---
+title: "VM configuration JSON schema reference"
+description: "Reference for Stratosphere's VM configuration JSON format. Documents all fields across vm, cpu, memory, network, and storage sections."
+---
+
+Each virtual machine managed by Stratosphere is described by a JSON configuration file stored at `vms/<name>.json`. These files are created when you run `VMCreate()` (CLI option 8). Currently `VMCreate()` writes an empty file — you must populate the fields manually. Future versions will prompt for all values during creation.
+
+## Full example
+
+```json
+{
+  "vm": {
+    "name": "example",
+    "uuid": "example-id",
+    "created_at": "1970-01-01T12:00:00Z"
+  },
+  "cpu": {
+    "cores": 2,
+    "threads": 2,
+    "type": "host"
+  },
+  "memory": {
+    "size_mb": 2048
+  },
+  "network": {
+    "interfaces": [
+      { "name": "eth0", "type": "nat", "mac": "auto" }
+    ]
+  },
+  "storage": {
+    "disks": [
+      {
+        "name": "example-disk",
+        "path": "vms/example/example-disk-0.qcow2",
+        "size_gb": 20,
+        "format": "qcow2"
+      }
+    ]
+  }
+}
+```
+
+---
+
+## `vm` object
+
+Top-level metadata that identifies the virtual machine.
+
+<ResponseField name="name" type="string" required>
+  Human-readable identifier for the VM. Should match the config filename (e.g. a file named `my-vm.json` would use `"name": "my-vm"`).
+</ResponseField>
+
+<ResponseField name="uuid" type="string" required>
+  Unique identifier for the VM. Used to distinguish VMs that share a name.
+</ResponseField>
+
+<ResponseField name="created_at" type="string" required>
+  ISO 8601 timestamp recording when the VM was created (e.g. `"1970-01-01T12:00:00Z"`).
+</ResponseField>
+
+---
+
+## `cpu` object
+
+Virtual CPU configuration.
+
+<ResponseField name="cores" type="integer" required>
+  Number of virtual CPU cores allocated to the VM.
+</ResponseField>
+
+<ResponseField name="threads" type="integer" required>
+  Number of threads per core. Set to `1` for single-threaded cores or `2` to emulate hyperthreading.
+</ResponseField>
+
+<ResponseField name="type" type="string" required>
+  CPU model passed to the hypervisor. Use `"host"` to pass through the host machine's CPU features directly.
+</ResponseField>
+
+---
+
+## `memory` object
+
+Memory allocation for the VM.
+
+<ResponseField name="size_mb" type="integer" required>
+  RAM allocated to the VM in megabytes. For example, `2048` is equivalent to 2 GB.
+</ResponseField>
+
+---
+
+## `network` object
+
+<ResponseField name="interfaces" type="array" required>
+  List of virtual network interface objects.
+
+  <Expandable title="interface properties">
+    <ResponseField name="name" type="string" required>
+      Interface name as seen inside the VM (e.g. `"eth0"`).
+    </ResponseField>
+
+    <ResponseField name="type" type="string" required>
+      Network mode. Use `"nat"` to share the host's network connection via network address translation.
+    </ResponseField>
+
+    <ResponseField name="mac" type="string" required>
+      MAC address for the interface. Set to `"auto"` to have Stratosphere generate one automatically.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+---
+
+## `storage` object
+
+<ResponseField name="disks" type="array" required>
+  List of virtual disk objects attached to the VM.
+
+  <Expandable title="disk properties">
+    <ResponseField name="name" type="string" required>
+      Human-readable identifier for the disk (e.g. `"example-disk"`).
+    </ResponseField>
+
+    <ResponseField name="path" type="string" required>
+      Path to the disk image file, relative to the project root (e.g. `"vms/example/example-disk-0.qcow2"`).
+    </ResponseField>
+
+    <ResponseField name="size_gb" type="integer" required>
+      Disk capacity in gigabytes.
+    </ResponseField>
+
+    <ResponseField name="format" type="string" required>
+      Disk image format. `"qcow2"` is the recommended format — it supports snapshots and sparse allocation.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+---
+
+<Note>
+  `VMCreate()` currently creates an empty JSON file at `vms/<name>.json`. All fields must be added manually after creation. A future release will prompt for every field interactively.
+</Note>

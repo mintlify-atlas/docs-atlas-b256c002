@@ -1,0 +1,131 @@
+---
+title: "VM actions: create, delete, and rename VMs"
+description: "Use Stratosphere Core's CLI to create, delete, and rename virtual machines. Learn valid naming rules, error handling, and what each action does."
+---
+
+Stratosphere Core exposes VM lifecycle actions through its interactive CLI menu. You can create a new VM, delete an existing one, or rename it. Each action prompts you for a VM name and validates your input before making any changes to the filesystem.
+
+## VM name rules
+
+All VM names must follow these rules regardless of which action you are performing:
+
+- Names **cannot** contain `/`, `\`, or `.`
+- Names must be unique — you cannot create two VMs with the same name
+- Names map directly to the file `vms/<name>.json`, so they must be valid as a filename component
+
+<Warning>
+Entering a name with `/`, `\`, or `.` will immediately reject the operation with an error message. No changes are made to the filesystem.
+</Warning>
+
+## Create VM (option 8)
+
+Selecting option **8** from the main menu runs the create flow.
+
+<Steps>
+  <Step title="Enter a VM name">
+    The CLI prompts you for a name. Type a name that does not contain `/`, `\`, or `.` and press Enter.
+  </Step>
+  <Step title="Name is validated">
+    Stratosphere checks the name for invalid characters and scans the `vms/` directory for an existing VM with the same name.
+  </Step>
+  <Step title="VM file is created">
+    If the name is valid and unique, `vms/<name>.json` is created. The `vms/` directory is also created automatically if it does not yet exist.
+  </Step>
+</Steps>
+
+**Example interaction:**
+
+```bash
+Enter VM name:
+my-server
+Creating VM with name: my-server
+Successfully created VM!
+```
+
+**Duplicate name error:**
+
+```bash
+Enter VM name:
+my-server
+A VM with that name (my-server) already exists. Please choose a different name.
+```
+
+**Invalid name error:**
+
+```bash
+Enter VM name:
+bad/name
+Invalid VM name. Contains (one or more) invalid characters: /, \, .
+```
+
+## Delete VM (option 9)
+
+Selecting option **9** removes a VM's config file from the filesystem.
+
+<Steps>
+  <Step title="Enter the VM name">
+    The CLI asks which VM you want to delete. Type the exact name of the VM.
+  </Step>
+  <Step title="Name is validated">
+    The name is checked for invalid characters. If valid, `vms/<name>.json` is removed.
+  </Step>
+</Steps>
+
+**Example interaction:**
+
+```bash
+What VM would you like to delete?
+my-server
+Successfully deleted VM: my-server
+```
+
+<Warning>
+Deletion is permanent. There is no confirmation prompt and no undo. The `vms/<name>.json` file is removed immediately.
+</Warning>
+
+## Manage VM (option 10)
+
+Selecting option **10** opens a submenu with additional VM management actions.
+
+```
+What would you like to do with your VM?
+1. Start
+2. Stop
+3. Restart
+4. Rename
+50. Exit
+```
+
+<Warning>
+**Start (1), Stop (2), and Restart (3) are not implemented in the current version.** Selecting any of these options does nothing. They are placeholder stubs awaiting hypervisor integration.
+</Warning>
+
+### Rename (submenu option 4)
+
+The rename action updates the VM's config file to a new name by renaming `vms/<oldname>.json` to `vms/<newname>.json`.
+
+<Steps>
+  <Step title="Enter the current VM name">
+    Type the name of the VM you want to rename.
+  </Step>
+  <Step title="Enter the new name">
+    Type the new name. It must not contain `/`, `\`, or `.`.
+  </Step>
+  <Step title="File is renamed">
+    Stratosphere renames `vms/<oldname>.json` to `vms/<newname>.json`.
+  </Step>
+</Steps>
+
+**Example interaction:**
+
+```bash
+What VM would you like to rename?
+my-server
+What would you like to rename it to?
+prod-server
+Successfully renamed VM from my-server to prod-server
+```
+
+### Exit (submenu option 50)
+
+Selecting **50** exits the manage VM submenu and returns to the main menu.

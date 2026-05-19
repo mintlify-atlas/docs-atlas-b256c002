@@ -1,0 +1,40 @@
+---
+title: "Watchers: real-time system resource monitoring"
+description: "Stratosphere's watcher system monitors CPU and RAM usage in real time using gopsutil. Configure polling rates and observe live system metrics."
+---
+
+Watchers are continuous polling loops built into Stratosphere Core that report live system resource usage directly to the terminal. Each watcher targets a specific resource — CPU or RAM — and prints formatted output on every polling cycle, giving you an always-current view of what your system is doing.
+
+## How watchers work
+
+Watchers use the [gopsutil](https://github.com/shirou/gopsutil) library to read system metrics at a configurable interval. Each watcher runs as an infinite loop: it samples the target resource, prints the result, then waits for the next polling cycle. Both watchers default to a **1-second polling rate**, which you can change from the CLI before starting the loop.
+
+<Note>
+Watchers run indefinitely until interrupted. Press **Ctrl+C** to stop a watcher and return to the CLI menu.
+</Note>
+
+## Available watchers
+
+<CardGroup cols={2}>
+  <Card title="CPU Watcher" icon="microchip" href="/watchers/cpu-watcher">
+    Polls overall CPU usage percentage using `cpu.Percent()` from gopsutil. Configure the polling interval or start watching immediately.
+  </Card>
+  <Card title="RAM Watcher" icon="memory" href="/watchers/ram-watcher">
+    Reports total RAM, used RAM in GB, and used RAM percentage using `mem.VirtualMemory()` from gopsutil.
+  </Card>
+</CardGroup>
+
+## Accessing watchers from the CLI
+
+When you run `go run main.go`, the interactive menu exposes four watcher options:
+
+| Option | Action |
+|--------|--------|
+| `1` | Set the CPU watcher polling rate (changes to 2 seconds), then start the CPU watcher |
+| `2` | Start the CPU watcher immediately with the current polling rate |
+| `3` | Set the RAM watcher polling rate (changes to 2 seconds), then start the RAM watcher |
+| `4` | Start the RAM watcher immediately with the current polling rate |
+
+<Tip>
+Use option `1` or `3` to change the polling rate before starting a watcher. Use option `2` or `4` to start watching right away with the default 1-second rate.
+</Tip>

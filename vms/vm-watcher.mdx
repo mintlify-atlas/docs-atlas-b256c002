@@ -1,0 +1,73 @@
+---
+title: "VM Watcher: monitor VM status and resources"
+description: "Monitor VM resource allocation and running status in Stratosphere Core via CLI options 5, 6, and 7. Values are currently hardcoded pending hypervisor support."
+---
+
+The VM Watcher package provides two monitoring functions that report a VM's running state and its hardware resource allocation. Both functions are accessible from the main CLI menu. In the current release, the values displayed are hardcoded placeholders — live hypervisor integration is planned for a future version.
+
+## CLI options
+
+| Option | Action                                      |
+| ------ | ------------------------------------------- |
+| 5      | View VM resource allocation                 |
+| 6      | View VM running status                      |
+| 7      | View both resource allocation and status    |
+
+## VMResourceAllocation (option 5)
+
+This function prints the RAM and CPU core allocation for the VM.
+
+**Current output:**
+
+```
+Watching VM resource allocation - RAM allocated: 4 GB, CPU cores allocated: 2
+```
+
+The values are set as package-level variables in `vmwatcher.go`:
+
+- RAM: **4 GB**
+- CPU cores: **2**
+
+## VMRunningStatus (option 6)
+
+This function prints whether the VM is currently running.
+
+**Current output:**
+
+```
+Vm running? Status: false
+```
+
+The running state is hardcoded to `false`.
+
+## Option 7 — view both
+
+Selecting option **7** calls both `VMResourceAllocation` and `VMRunningStatus` in sequence, displaying both outputs together.
+
+<Note>
+All values shown by the VM Watcher are currently hardcoded. The watcher does not read from a running hypervisor or inspect any live VM state. Future versions will accept a VM ID and query real system metrics.
+</Note>
+
+## Source code
+
+```go
+package vmwatcher
+
+import "fmt"
+
+var ramAlloc int = 4
+var cpuCoresAlloc int = 2
+
+func VMRunningStatus() {
+    var vmRunning bool = false
+    fmt.Printf("Vm running? Status: %v", vmRunning)
+}
+
+func VMResourceAllocation() {
+    fmt.Printf("Watching VM resource allocation - RAM allocated: %v GB, CPU cores allocated: %v", ramAlloc, cpuCoresAlloc)
+}
+```
+
+<Tip>
+When hypervisor support is added, `VMResourceAllocation` and `VMRunningStatus` will accept a VM identifier so you can monitor individual machines rather than a single global state.
+</Tip>

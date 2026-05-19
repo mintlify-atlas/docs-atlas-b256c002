@@ -1,0 +1,53 @@
+---
+title: "Virtual machine management in Stratosphere Core"
+description: "Stratosphere Core manages virtual machines as JSON config files. Create, delete, rename, and monitor VMs through the interactive CLI menu."
+---
+
+Stratosphere Core manages virtual machines as lightweight JSON configuration files stored in the `vms/` directory. Each VM is represented by a single `.json` file that holds its identity, hardware allocation, network interfaces, and storage configuration. You interact with VMs entirely through the interactive CLI menu, which provides options for creating, deleting, renaming, and monitoring your machines.
+
+## How VMs are stored
+
+Every VM corresponds to a file at `vms/<vmname>.json`. The `vms/` directory is created automatically the first time you create a VM. File names map directly to VM names, so a VM named `my-server` lives at `vms/my-server.json`.
+
+<Note>
+VM names cannot contain `/`, `\`, or `.` characters. These restrictions prevent path traversal and file-system conflicts.
+</Note>
+
+## Current capabilities
+
+The following actions are available in the current release:
+
+| CLI option | Action                        |
+| ---------- | ----------------------------- |
+| 5          | View VM resource allocation   |
+| 6          | View VM running status        |
+| 7          | View both status and resources|
+| 8          | Create a VM                   |
+| 9          | Delete a VM                   |
+| 10         | Manage a VM (rename, and more)|
+
+## What is not yet implemented
+
+The **Start**, **Stop**, and **Restart** actions are present in the manage VM submenu (options 1, 2, and 3) but are currently empty stubs. Selecting them has no effect. These will be wired up to a hypervisor backend in a future release.
+
+<Warning>
+Choosing Start, Stop, or Restart in the manage VM submenu does nothing in the current version. Only Rename (option 4) is functional.
+</Warning>
+
+## Pages in this section
+
+<CardGroup cols={3}>
+  <Card title="VM config format" icon="file-code" href="/vms/vm-config">
+    Learn the JSON schema that defines each VM's hardware and network settings.
+  </Card>
+  <Card title="VM actions" icon="terminal" href="/vms/vm-actions">
+    Create, delete, and rename VMs using the CLI menu.
+  </Card>
+  <Card title="VM Watcher" icon="chart-line" href="/vms/vm-watcher">
+    Monitor running status and resource allocation for your VMs.
+  </Card>
+</CardGroup>
+
+<Note>
+Future versions of Stratosphere Core will integrate with a hypervisor to support live start/stop/restart operations, real-time resource metrics, and multi-VM monitoring by ID.
+</Note>

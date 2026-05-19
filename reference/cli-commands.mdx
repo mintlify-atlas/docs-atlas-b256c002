@@ -1,0 +1,84 @@
+---
+title: "CLI command reference for Stratosphere Core"
+description: "Complete reference for all Stratosphere Core CLI menu options. Covers watcher commands, VM management actions, and the VMManage submenu."
+---
+
+Stratosphere Core currently ships with an interactive numbered CLI menu. This page documents every available menu option, the underlying function each option calls, and known limitations. The CLI is a placeholder for a future GUI — the numbered prompt is the primary interface for now.
+
+## Running the CLI
+
+<CodeGroup>
+
+```bash Source
+go run main.go
+```
+
+```bash Compiled binary
+./stratosphere
+```
+
+</CodeGroup>
+
+After launching, you will see the main menu. Enter a number and press Enter to select an option.
+
+<Note>
+  The CLI uses a numbered menu, not named subcommands. There are no flags or arguments — all input is a single integer choice.
+</Note>
+
+---
+
+## Watchers
+
+| Option | Action | Function called |
+|--------|--------|-----------------|
+| 1 | Change CpuWatcher polling rate | Sets rate to 2 s, then calls `WatchCPU()` |
+| 2 | View CPU usage | `WatchCPU()` |
+| 3 | Change RAMWatcher polling rate | Sets rate to 2 s, then calls `WatchRAM()` |
+| 4 | View RAM usage | `WatchRAM()` |
+
+<Tip>
+  Options 1 and 3 currently hardcode the polling rate to 2 seconds. Support for user-specified polling intervals is planned for a future release.
+</Tip>
+
+<Warning>
+  Options 2 and 4 (and the watcher calls triggered by options 1 and 3) start an infinite monitoring loop. Press Ctrl+C to stop.
+</Warning>
+
+---
+
+## VM management
+
+| Option | Action | Function called |
+|--------|--------|-----------------|
+| 5 | View VM resource allocation | `VMResourceAllocation()` |
+| 6 | View VM status | `VMRunningStatus()` |
+| 7 | View both resource allocation and status | `VMResourceAllocation()` then `VMRunningStatus()` |
+| 8 | Create VM | `VMCreate()` |
+| 9 | Delete VM | `VMDelete()` |
+| 10 | Manage VM (opens submenu) | `VMManage()` |
+
+---
+
+## VMManage submenu
+
+Option 10 opens a nested submenu with the following choices:
+
+| Option | Action | Status |
+|--------|--------|--------|
+| 1 | Start VM | Not yet implemented |
+| 2 | Stop VM | Not yet implemented |
+| 3 | Restart VM | Not yet implemented |
+| 4 | Rename VM | Implemented — calls `VMRename()` |
+| 50 | Exit submenu | — |
+
+<Warning>
+  Start (1), Stop (2), and Restart (3) in the VMManage submenu are placeholder stubs. Selecting them does nothing until hypervisor integration is added.
+</Warning>
+
+---
+
+## Other
+
+| Option | Action |
+|--------|--------|
+| 50 | Exit the CLI |
